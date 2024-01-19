@@ -2,6 +2,12 @@ import streamlit as st
 import langchain_helper as lch
 import textwrap
 
+st.set_page_config(
+    page_title="YouTube Assistant App",
+    page_icon="📺",
+    initial_sidebar_state="expanded",
+)
+
 st.title("YouTube Assistant")
 
 with st.sidebar:
@@ -21,5 +27,4 @@ if query and youtube_url:
     lines = response.split("\n")
 
     for line in lines:
-        # st.text(line)
         st.text(textwrap.fill(line, width=85))
