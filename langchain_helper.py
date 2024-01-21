@@ -11,7 +11,7 @@ def create_db_from_youtube_video_url(video_url: str, openai_api_key) -> FAISS:
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     transcript = loader.load()
 
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=256, chunk_overlap=20)
     docs = text_splitter.split_documents(transcript)
 
     db = FAISS.from_documents(docs, embeddings)
