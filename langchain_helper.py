@@ -17,14 +17,14 @@ def create_db_from_youtube_video_url(video_url: str) -> FAISS:
     loader = YoutubeLoader.from_youtube_url(video_url)
     transcript = loader.load()
 
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     docs = text_splitter.split_documents(transcript)
 
     db = FAISS.from_documents(docs, embeddings)
     return db
 
 
-def get_response_from_query(db, query, k=5):
+def get_response_from_query(db, query, k=4):
     docs = db.similarity_search(query, k=k)
     docs_page_content = " ".join([d.page_content for d in docs])
 
