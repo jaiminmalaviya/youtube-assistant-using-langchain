@@ -3,18 +3,12 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.prompts import PromptTemplate
-from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
-import os
-
-load_dotenv()
-embeddings = OpenAIEmbeddings()
-
-key = os.getenv("OPENAI_API_KEY")
 
 
-def create_db_from_youtube_video_url(video_url: str) -> FAISS:
+def create_db_from_youtube_video_url(video_url: str, openai_api_key) -> FAISS:
     loader = YoutubeLoader.from_youtube_url(video_url)
+    embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     transcript = loader.load()
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
@@ -24,11 +18,11 @@ def create_db_from_youtube_video_url(video_url: str) -> FAISS:
     return db
 
 
-def get_response_from_query(db, query, k=4):
+def get_response_from_query(db, query, openai_api_key, k=4):
     docs = db.similarity_search(query, k=k)
     docs_page_content = " ".join([d.page_content for d in docs])
 
-    llm = ChatOpenAI(openai_api_key=key)
+    llm = ChatOpenAI(openai_api_key=openai_api_key)
 
     prompt = PromptTemplate(
         input_variables=["question", "docs"],
